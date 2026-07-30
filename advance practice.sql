@@ -1,0 +1,95 @@
+use harshadb
+select *from employees;
+select *from order_items;
+select*from orders;
+select*from products;
+select*from customers;
+
+#List all customers from Hyderabad, ordered by signup date (newest first)
+select customer_name,city,signup_date
+from customers
+where city='Hyderabad'
+order by signup_date DESC;
+
+#Find all products priced above ₹2000.
+select product_name,price
+from products
+where price>2000;
+
+#Count the number of orders per order_status.
+select order_status,count(order_status) as number_of_orders
+from orders
+group by order_status;
+
+#Find the total revenue (order_total) generated in 2025.
+select year(order_date) as year,SUM(order_total) As total_revenue
+from orders
+where year(order_date)='2025'
+group by year(order_date);
+
+#List the top 5 most expensive products in the "Electronics" category.
+select product_name,category,price
+from products
+where category='Electronics'
+order by price desc
+LIMIT 5;
+
+#Find all employees hired before 2024-06-01.
+select employee_id,employee_name,hire_date
+from employees
+where hire_date<'2024-06-01';
+
+#Get the average order value across all delivered orders.
+select avg(order_total) as avg_order_value
+from orders
+where order_status='Delivered'
+
+#Find customers who belong to the "Premium" segment and signed up in 2024
+select*from customers
+where customer_segment='Premium';
+
+#For each city, find the total number of customers and total revenue from their orders.
+select count(DISTINCT c.customer_id) AS num_customers ,c.city,sum(o.order_total) as total_revenue
+from orders o
+JOIN customers c ON c.customer_id=o.customer_id
+group by c.city;
+
+#Find the top 10 customers by total amount spent (only count Delivered orders).
+select c.customer_name,sum(o.order_total) as total_spent
+from orders o
+join customers c ON c.customer_id=o.customer_id
+where o.order_status='Delivered'
+group by c.customer_name
+order by total_spent DESC limit 10;
+
+#For each product category, find total quantity sold and total revenue.
+select p.category,SUM(i.quantity) as total_quantity_soild,sum(i.quantity*i.unit_price) as total_revenue
+from order_items i
+JOIN products p on p.product_id=i.product_id
+group by p.category;
+
+#List employees along with the total number of orders they've handled.
+select e.employee_name,COUNT(o.order_id) as Total_orders
+from orders o
+JOIN employees e ON e.employee_id=o.employee_id
+group by e.employee_name;
+
+#Display all orders with the customer name.
+select o.order_id, c.customer_name 
+from customers c
+JOIN orders o on o.customer_id=c.customer_id;
+
+#Find the total number of orders placed by each customer.
+select customer_name,count(o.order_id) as total_no_orders
+from orders o
+join customers c on c.customer_id=o.customer_id
+group by customer_name;
+
+#. Show each customer's total spending.
+select c.customer_name,sum(o.order_total) as total_spending
+from orders o
+join customers c on c.customer_id=o.customer_id
+group by c.customer_name;
+
+#Find the average order value for each customer.
+
