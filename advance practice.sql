@@ -92,4 +92,65 @@ join customers c on c.customer_id=o.customer_id
 group by c.customer_name;
 
 #Find the average order value for each customer.
+select c.customer_name,round(avg(o.order_total),2) avg_order
+from orders o
+join customers c on c.customer_id=o.customer_id
+group by c.customer_name
 
+#Display the top 5 customers based on total amount spent.
+select c.customer_name,round(sum(order_total),2) as total_amountspend
+from orders o
+join customers c on c.customer_id=o.customer_id
+group by c.customer_name
+order by total_amountspend desc
+limit 5;
+
+#Find products that have never been ordered.
+select p.product_name,o.product_id from products p
+left JOIN order_items o on o.product_id=p.product_id
+where o.product_id is null;
+
+#Show the total quantity sold for each product.
+select p.product_name,SUM(o.quantity) as total_quantity
+from order_items o
+JOIN products p on p.product_id=o.product_id
+group by p.product_name;
+
+#Show employees along with the number of orders they handled.
+select e.employee_id, e.employee_name,count(o.order_id) as num_of_orders
+from orders o
+left join employees e on e.employee_id=o.employee_id
+group by e.employee_id,e.employee_name;
+
+#Show monthly revenue.
+select extract(year from order_date) as year,extract(month from order_date) as month,round(sum(order_total),2) as montly_revenue
+from orders
+group by extract(month from order_date),extract(year from order_date)
+order by year,month;
+
+#or
+select month(order_date) as month,year(order_date) as year,round(sum(order_total),2) as monthly_revenue
+from orders
+group by month(order_date),year(order_date)
+order by year,month;
+
+#Find customers whose total spending is greater than the average customer spending.
+select customer_name, total_spending
+from (
+    select c.customer_name, round(sum(o.order_total),2) as total_spending
+    from orders o
+    join customers c on c.customer_id = o.customer_id
+    group by c.customer_name
+) as customer_totals
+where total_spending > (
+    select avg(total_spending)
+    from (
+        select sum(o.order_total) as total_spending
+        from orders o
+        join customers c on c.customer_id = o.customer_id
+        group by c.customer_id
+    ) as customer_totals_2
+)
+order by total_spending desc;
+    
+    
