@@ -92,6 +92,7 @@ join customers c on c.customer_id=o.customer_id
 group by c.customer_name;
 
 #Find the average order value for each customer.
+<<<<<<< HEAD
 select c.customer_name,round(avg(o.order_total),2) avg_order
 from orders o
 join customers c on c.customer_id=o.customer_id
@@ -154,3 +155,6 @@ where total_spending > (
 order by total_spending desc;
     
     
+=======
+
+>>>>>>> 889857ac390d23f5629e87d2d6c86d4b5992ad78
