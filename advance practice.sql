@@ -153,8 +153,24 @@ where total_spending > (
     ) as customer_totals_2
 )
 order by total_spending desc;
-    
-    
-=======
 
->>>>>>> 889857ac390d23f5629e87d2d6c86d4b5992ad78
+#Find products whose price is greater than the average product price.
+select product_name,category,price
+from products
+where price>(
+	select avg(price)
+    from products);
+
+#Find employees whose total sales are above the company average.
+select e.employee_name,round(sum(o.order_total),2) as total_sales
+from orders o
+join employees e on e.employee_id=o.employee_id 
+group by e.employee_name
+having sum(o.order_total)>(
+	select avg(o.order_total) as avg_total
+    from(
+		select sum(o.order_total) as total_peremployee
+        from sales
+        group by e.employee_name
+        ) as  emp_total
+	);
