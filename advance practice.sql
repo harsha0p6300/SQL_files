@@ -191,4 +191,11 @@ where price=(
 		select max(price) as hig_price
         from products)
 );
-
+#using denserank
+select product_name,price
+from(
+	select product_name,price,
+    dense_rank() over(order by price desc) as rnk
+from products
+)p
+where rnk=2;
