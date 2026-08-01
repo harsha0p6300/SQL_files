@@ -174,3 +174,9 @@ having sum(o.order_total)>(
         group by e.employee_name
         ) as  emp_total
 	);
+    
+#19. Find customers who never placed an order.
+select c.customer_id,c.customer_name,o.order_id
+from customers c
+left join orders o on o.customer_id=c.customer_id
+where o.customer_id is null;
