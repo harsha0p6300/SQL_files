@@ -180,3 +180,15 @@ select c.customer_id,c.customer_name,o.order_id
 from customers c
 left join orders o on o.customer_id=c.customer_id
 where o.customer_id is null;
+
+#Find the second highest priced product.
+select product_name,price
+from products
+where price=(
+	select max(price) as high_price
+    from products
+    where price<(
+		select max(price) as hig_price
+        from products)
+);
+
