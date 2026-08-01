@@ -199,3 +199,12 @@ from(
 from products
 )p
 where rnk=2;
+
+#Find the third highest order amount.
+select customer_id,customer_name,order_total
+from(
+	select c.customer_id,c.customer_name,o.order_total,
+    dense_rank() over( order by o.order_total desc) as amount_rank
+from customers c
+join orders o on o.customer_id=c.customer_id) as rank_orders
+where amount_rank=3;
