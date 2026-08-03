@@ -239,4 +239,8 @@ from (
     ) as ranked_products
 where drnk=1;
     
-	
+#Show employees along with the number of orders they handled.
+SELECT e.employee_id, e.employee_name, COUNT(o.order_id) AS orders
+FROM employees e
+LEFT JOIN orders o ON e.employee_id = o.employee_id
+GROUP BY e.employee_id, e.employee_name;
