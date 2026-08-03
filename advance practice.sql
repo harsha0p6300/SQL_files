@@ -17,7 +17,7 @@ from products
 where price>2000;
 
 #Count the number of orders per order_status.
-select order_status,count(order_status) as number_of_orders
+select order_status,count(order_status) as number_of_~orders
 from orders
 group by order_status;
 
@@ -208,3 +208,35 @@ from(
 from customers c
 join orders o on o.customer_id=c.customer_id) as rank_orders
 where amount_rank=3;
+
+
+#There is no relationship between orders and products.
+#Find customers who purchased the most expensive product.
+select c.customer_name,p.product_name,p.price
+from customers c
+JOIN orders o on c.customer_id=o.customer_id
+JOIN products p on o.product_id=p.product_id
+where p.price=(
+	select max(price)
+    from products
+    );
+    
+#Display the product with the highest revenue
+select p.product_name,round(sum(o.quantity*o.unit_price)) as revenue
+from products p
+Join order_items o on o.product_id=p.product_id
+group by p.product_name
+order by revenue desc limit 1;
+
+#using dense_rank()Display the product with the highest revenue
+select product_name, revenue
+from (
+	select p.product_name,round(sum(o.quantity*o.unit_price)) as revenue,
+    dense_rank() over(order by sum(o.quantity*o.unit_price) desc) as drnk
+    from products p
+    join order_items o on o.product_id=p.product_id
+    group by p.product_id,p.product_name
+    ) as ranked_products
+where drnk=1;
+    
+	
