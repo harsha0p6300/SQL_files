@@ -1,5 +1,5 @@
 use harshadb
-select *from employees;
+select*from employees;
 select *from order_items;
 select*from orders;
 select*from products;
@@ -244,3 +244,12 @@ SELECT e.employee_id, e.employee_name, COUNT(o.order_id) AS orders
 FROM employees e
 LEFT JOIN orders o ON e.employee_id = o.employee_id
 GROUP BY e.employee_id, e.employee_name;
+
+#26. Rank products by total revenue.
+select product_id,product_name,total_revenue,revenue_rank
+from (
+	select p.product_id, p.product_name,round(sum(o.line_total)) as total_revenue,
+    rank() over(order by round(sum(o.line_total)) desc) as revenue_rank
+    from order_items o
+    join products p on p.product_id=o.product_id
+    group by p.product_id,p.product_name) as ranked_products ;
