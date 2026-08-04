@@ -249,7 +249,16 @@ GROUP BY e.employee_id, e.employee_name;
 select product_id,product_name,total_revenue,revenue_rank
 from (
 	select p.product_id, p.product_name,round(sum(o.line_total)) as total_revenue,
-    rank() over(order by round(sum(o.line_total)) desc) as revenue_rank
+    rank() over(order by round(sum(o.line_total)) desc) as revvenue_rank
     from order_items o
     join products p on p.product_id=o.product_id
     group by p.product_id,p.product_name) as ranked_products ;
+    
+#Dense rank employees based on total sales.
+select employee_id,employee_name,total_sales,rankings
+from(
+	select e.employee_id,e.employee_name,round(sum(o.order_total)) as total_sales,
+    dense_rank() over(order by round(sum(o.order_total)) desc) as rankings
+    from employees e
+    left join orders o on o.employee_id=e.employee_id
+    group by e.employee_id,e.employee_name) as ranked_employees;
