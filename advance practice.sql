@@ -262,3 +262,13 @@ from(
     from employees e
     left join orders o on o.employee_id=e.employee_id
     group by e.employee_id,e.employee_name) as ranked_employees;
+    
+#Find the top 3 selling products. using row number()
+select product_id,product_name, revenue ,selling_products
+from(
+	select p.product_id,p.product_name,round(sum(o.line_total)) as revenue,
+    row_number() over( order by sum(line_total) desc) as selling_products
+    from products p
+    join order_items o on o.product_id=p.product_id
+    group by p.product_id,p.product_name) as ranked_products
+WHERE selling_products <= 3;
