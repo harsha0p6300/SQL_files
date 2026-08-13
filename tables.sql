@@ -17,3 +17,34 @@ where o.order_ts>='2024-01-05' and o.order_ts<='2024-06-01'
 group by p.category
 order by revenue desc limit 5;
 
+#Find the number of products in each category
+select category,count(product_id) as total_products
+from products 
+group by category;
+
+#Rank customers based on their total spending.
+select c.customer_id, total_spendings
+from(
+	select c.customer_id,sum(oi.quantity*oi.unit_price-oi.discount_amount) as total_spendings,
+    rank() over(order by total_spendings desc) as rnk
+    from customers c
+    join orders o on(o.customer_id=c.customer_id)
+    join order_items oi on(o.order_id=oi.order_id)
+    group by c.customer_id
+    ) as ranked_spendings;
+#or
+select 
+    ranked_spendings.customer_id, 
+    ranked_spendings.total_spendings,
+    ranked_spendings.rnk
+from (
+    select 
+        c.customer_id,
+        sum(oi.quantity * oi.unit_price - oi.discount_amount) as total_spendings,
+        rank() over (order by sum(oi.quantity * oi.unit_price - oi.discount_amount) desc) as rnk
+    from customers c
+    join orders o on o.customer_id = c.customer_id
+    join order_items oi on o.order_id = oi.order_id
+    group by c.customer_id
+) as ranked_spendings
+order by ranked_spendings.rnk;
