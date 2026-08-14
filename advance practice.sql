@@ -17,7 +17,7 @@ from products
 where price>2000;
 
 #Count the number of orders per order_status.
-select order_status,count(order_status) as number_of_~orders
+select order_status,count(order_status) as number_of_orders
 from orders
 group by order_status;
 

@@ -48,3 +48,19 @@ from (
     group by c.customer_id
 ) as ranked_spendings
 order by ranked_spendings.rnk;
+
+#or using CTE
+with customer_spendings AS(
+	select c.customer_id,sum(oi.quantity*oi.unit_price-discount_amount) as total_spendings
+    from customers c
+    join orders o on o.customer_id=c.customer_id
+    join order_items oi on o.order_id=oi.order_id
+    group by c.customer_id
+)
+select *from customer_spendings;
+select customer_id,total_spendings,
+	rank() over(order by customer_spendings desc) as rnk
+    from customer_spendings 
+    order by rnk;
+    
+
