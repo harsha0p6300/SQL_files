@@ -1,5 +1,6 @@
 use ecommerce_db;
 
+drop table employees
 CREATE TABLE employees (
 	employee_id int primary key,
     employee_name varchar(100),
@@ -15,7 +16,7 @@ VALUES
 (3, 'Rahul Verma', '2021-07-10', 'IT', 58000.00),
 (4, 'Sneha Reddy', '2018-11-05', 'HR', 55000.00),
 (5, 'Vikram Singh', '2022-02-18', 'Sales', 48000.00),
-(6, 'Ananya Rao', '2020-06-25', 'Finance', 68000.00),
+(6, 'Ananya Rao', '2020-06-25', 'Finance', 72000.00),
 (7, 'Kiran Patel', '2017-09-12', 'IT', 85000.00),
 (8, 'Meera Nair', '2023-01-09', 'HR', 45000.00),
 (9, 'Aditya Reddy', '2019-12-16', 'Sales', 52000.00),
@@ -38,4 +39,19 @@ select row_number() over(partition by department_name) as r0w_Number,e.* from em
 select *from
 (select e.*, row_number() over( partition by department_name order by hire_date asc) as rn 
 from employees e) x
-where x.rn<3
+where x.rn<3;
+
+#Find the top3 highest paid employees in each deparment using the RANK() function
+select *from
+(select e.*,rank() over(partition by department_name order by salary desc) as high_salary 
+	from employees e) high
+where high.high_salary<4;
+
+#Find the top3 highest paid employees in each deparment using the DENSE_RANK() function
+select *from
+(select e.*,dense_rank() over(partition by department_name order by salary desc) as dense_R
+	from employees e) high
+where high.dense_R<4;
+
+#use case of the lag() function
+select e.*,lag(salary) over(partition by department_name order by employee_id) as pre_emp_salary from employees e
