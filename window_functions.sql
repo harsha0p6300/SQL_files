@@ -33,3 +33,9 @@ select *, max(salary) over(partition by department_name) as max_salary from empl
 
 #ROW_NUMBER() fucntion usecase
 select row_number() over(partition by department_name) as r0w_Number,e.* from employees e;
+
+#find first two employees who joined in the company from each department
+select *from
+(select e.*, row_number() over( partition by department_name order by hire_date asc) as rn 
+from employees e) x
+where x.rn<3
