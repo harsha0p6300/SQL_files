@@ -69,3 +69,6 @@ from employees e;
 #usecase of the LEAD() function
 select e.*,	lead(salary) over(partition by department_name order by employee_id) as pre_emp_salary
 from employees e;
+
+select e.*,	lead(salary,2,0) over(partition by department_name order by employee_id) as pre_emp_salary
+from employees e;
