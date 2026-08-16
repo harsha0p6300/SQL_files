@@ -53,5 +53,15 @@ select *from
 	from employees e) high
 where high.dense_R<4;
 
+/*The Lag() and Lead() Functions in SQL are window functions 
+that allow you to access data from a previous row (LAG()) or a subsequent row (LEAD())
+in the result set,without needing to perform a self-join.
+These functions are very useful when you need to compare values between consecutive rows or
+analyze trends over time.*/
+
 #use case of the lag() function
-select e.*,lag(salary) over(partition by department_name order by employee_id) as pre_emp_salary from employees e
+select e.*,lag(salary) over(partition by department_name order by employee_id) as pre_emp_salary
+from employees e;
+
+select e.*,lag(salary,2,0) over(partition by department_name order by employee_id) as pre_emp_salary
+from employees e;
