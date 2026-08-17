@@ -62,5 +62,19 @@ select customer_id,total_spendings,
 	rank() over(order by customer_spendings desc) as rnk
     from customer_spendings 
     order by rnk;
-    
+# Show customer name, total orders, total spending, and their difference from the average customer spending.
+
+#Find customers whose total spending is above the average spending of all customers.
+select customer_id,total_spendings
+from(
+	select c.customer_id,sum(oi.quantity*oi.unit_price-oi.discount_amount) as total_spendings,
+    avg(sum(oi.quantity*oi.unit_price-oi.discount_amount)) over() as avg_spendings
+    from customers c
+    join orders o on o.customer_id=c.customer_id
+    join order_items oi on oi.order_id=o.order_id
+	group by c.customer_id
+) sub
+where total_spendings>avg_spendings;
+
+
 
