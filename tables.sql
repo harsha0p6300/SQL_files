@@ -76,5 +76,18 @@ from(
 ) sub
 where total_spendings>avg_spendings;
 
+#or using the CTE
 
-
+with customer_spendings as (
+	select c.customer_id,sum(oi.quantity*oi.unit_price-oi.discount_amount) as total_spending
+    from customers c
+    join orders o on o.customer_id=c.customer_id
+    join order_items oi on oi.order_id=o.order_id
+    group by c.customer_id
+)
+select customer_id,total_spending
+from customer_spendings
+where total_spending>(
+	select avg(total_spending) from customer_spendings)
+order by total_spending desc;
+	
